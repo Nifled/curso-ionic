@@ -1,5 +1,5 @@
 import { Component } from '@angular/core';
-import { IonicPage, NavController, NavParams } from 'ionic-angular';
+import { IonicPage, NavController, NavParams, LoadingController } from 'ionic-angular';
 import { AuthProvider } from '../../providers/auth/auth';
 import { HomePage } from '../home/home';
 
@@ -20,8 +20,9 @@ export class LoginPage {
   public username : string;
   public password : string;
   public userInfo : any;
+  public loader : any;
 
-  constructor(public navCtrl: NavController, public navParams: NavParams, private service: AuthProvider) {
+  constructor(public navCtrl: NavController, public navParams: NavParams, public loadingCtrl: LoadingController, private service: AuthProvider) {
   }
 
   ionViewDidLoad() {
@@ -29,18 +30,32 @@ export class LoginPage {
   }
 
   login() {
+    this.presentLoading();
+
     let user = {
       username: this.username,
       password: this.password
     };
 
     this.service.login(user).subscribe(
-      data => this.userInfo = data,
+      data => {
+        this.userInfo = data
+        localStorage.pizza = JSON.stringify(data);
+      },
       err => console.log(err),
       () => {
-        this.navCtrl.setRoot(HomePage, {inf: this.userInfo});
+        // this.navCtrl.setRoot(HomePage, {inf: this.userInfo});
+        this.loader.dismiss();
+        this.navCtrl.setRoot('TabsPage');
       }
     );
   }
 
+  presentLoading() {
+    this.loader = this.loadingCtrl.create({
+      content: "Loading...",
+      duration: 3000
+    });
+    this.loader.present();
+  }
 }
