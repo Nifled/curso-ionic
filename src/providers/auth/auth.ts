@@ -15,6 +15,7 @@ export class AuthProvider {
   }
 
   login(user) {
-    return this.http.get("https://demo8866596.mockable.io/AdminPerm");
+    // return this.http.get("https://demo8866596.mockable.io/AdminPerm");
+    return this.http.get("https://demo8866596.mockable.io/getPizzas");
   }
 }
